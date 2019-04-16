@@ -40,7 +40,7 @@ int main()
         EN += N*(clock-prev);						// update system statistics
         Elist.insert(clock+exp_rv(lambda),ARR);		// generate next arrival 
 		if(N<K){                                    // check that 
-			N++;                                    // update system size
+           N++;
         } else {
 			block++;
 		}			
@@ -54,7 +54,7 @@ int main()
     case DEP:                                 // If departure
       EN += N*(clock-prev);                   // update system statistics
       N--;                                    // decrement system size
-      Ndep++;                                 // increment num. of departures
+      Ndep++;
       if (N > 0) {                            // If customers remain
         Elist.insert(clock+exp_rv(mu),DEP);   // generate next departure
       } 
