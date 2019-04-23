@@ -9,7 +9,7 @@ int main()
   EventList Elist;                                  // Create event list
   enum {ARR,DEP};                                   // Define the event types
 
-  double lambda = 0.6;                              // Arrival rate
+  double lambda = 2.4;                              // Arrival rate
   double mu = 3.0;                                  // Service rate jobs/second
 
   double clock = 0.0;                               // System clock
@@ -21,7 +21,9 @@ int main()
   int K = 4;                                        // Capacity of machine
   int M = 2;                                        // Number of processors 
   int done = 0;                                     // End condition satisfied?
-  int totalEvents = 200000;                         // Number of total events to hit done
+  int totalDep = 200000;                         // Number of total events to hit done
+  int aveNum = 0;
+  int arr = 0;
 
   Event* CurrentEvent;
 
@@ -36,6 +38,7 @@ int main()
     switch (CurrentEvent->type) {                   // Check the type of event
     case ARR:                                 		// If arrival 
       EN += N*(clock-prev);						    // update system statistics
+      arr++;
       if (N<K) {
         N++;                                        // Increment system size if not at capacity
       } else {
@@ -43,33 +46,33 @@ int main()
       }
       if (M > 0 && M <=2) {                         // Check if available processor
         Elist.insert(clock+exp_rv(mu),DEP);         // Generate next departure
+        M--;  
       }
       Elist.insert(clock+exp_rv(lambda),ARR);       // Generate next arrival
-      M--;                                          // Decrease processor because generating arrival event
     break;
     case DEP:                                       // If departure
       Ndep++;                                       // Increase number of departures
       EN += N*(clock-prev);                         // update system statistics
-      if (M < 2) {                                  // if processes is not at 2, increase processors
         M++;
-      }
       if (N>0) {                                    // If there is an event, generate departure and decrease size
         N--;
         Elist.insert(clock+exp_rv(mu),DEP);
+        M--;
       }
       break;
     }
     delete CurrentEvent;
-    if (Ndep > totalEvents) done=1;                 // End condition
+    if (Ndep > totalDep) done=1;                 // End condition
   }
   // output simulation results for N, E[N] 
   std::cout << "Current number of customers in system: " << N << std::endl;
   std::cout << "Expected number of customers (simulation): " << EN/clock << std::endl;
   std::cout << "Number of blocked events: " << block << std::endl;
-  std::cout << "Probability of events blocked: " << (block/totalEvents)*100 << "%" << std::endl;
+  std::cout << "ave time: " << EN/lambda << std::endl;
+  std::cout << "Probability of events blocked: " << (block/arr)*100 << "%" << std::endl;
   
   // output derived value for E[N]
-  double rho = lambda/(mu*M); 
+  double rho = lambda/(mu*2); 
   std::cout << "Expected number of customers (analysis): " << rho/(1-rho) << std::endl;
 } 
   
