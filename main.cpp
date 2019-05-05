@@ -9,8 +9,9 @@ int main()
   EventList Elist;                                  // Create event list
   enum {ARR,DEP};                                   // Define the event types
 
-  double lambda = 2.4;                              // Arrival rate
-  double mu = 3.0;                                  // Service rate jobs/second
+  double lambda = 6.0;                              // Arrival rate, changes cause of rho
+  // 4.2
+  double mu = 3.0;                                  // Departure rate jobs/second
 
   double clock = 0.0;                               // System clock
   int N = 0;                                        // Number of events in system
@@ -21,8 +22,7 @@ int main()
   int K = 4;                                        // Capacity of machine
   int M = 2;                                        // Number of processors 
   int done = 0;                                     // End condition satisfied?
-  int totalDep = 200000;                         // Number of total events to hit done
-  int aveNum = 0;
+  int totalDep = 200000;                            // Number of total events to hit done
   int arr = 0;
 
   Event* CurrentEvent;
@@ -64,16 +64,12 @@ int main()
     delete CurrentEvent;
     if (Ndep > totalDep) done=1;                 // End condition
   }
-  // output simulation results for N, E[N] 
-  std::cout << "Current number of customers in system: " << N << std::endl;
-  std::cout << "Expected number of customers (simulation): " << EN/clock << std::endl;
-  std::cout << "Number of blocked events: " << block << std::endl;
-  std::cout << "ave time: " << EN/lambda << std::endl;
-  std::cout << "Probability of events blocked: " << (block/arr)*100 << "%" << std::endl;
   
-  // output derived value for E[N]
-  double rho = lambda/(mu*2); 
-  std::cout << "Expected number of customers (analysis): " << rho/(1-rho) << std::endl;
-} 
+  // output simulation results for N, E[N] 
+  std::cout << "Expected number of events (simulation): " << EN/clock << std::endl;
+  std::cout << "Average time an event is in the system: " << (EN/clock)/lambda << std::endl;
+  std::cout << "Probability of events blocked: " << block/arr << std::endl;
+
+}    
   
   
